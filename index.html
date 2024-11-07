@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Weather Displayer</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="card">
+            <div class="dropmenu">
+                <button onclick="dropthemenu()" class="dropbtn">Choose city</button>
+                <div id="myDropdown" class="dropdown-content">
+                    <a href="#bng" data-city="Bangalore">Bangalore</a>
+                    <a href="#mum" data-city="Mumbai">Mumbai</a>
+                    <a href="#chn" data-city="Chennai">Chennai</a>
+                    <a href="#delh" data-city="Delhi">Delhi</a>
+                </div>
+            </div>
+            <div class="weathershow">
+                <img src="images/clear.png" class="weathericon">
+                <h1 class="tmpr">22°C</h1>
+                <h2 class="city">Bangalore</h2>
+                <div class="dets">
+                    <div class="col">
+                        <img src="images/humidity.png">
+                        <div>
+                            <p class="humidity">50%</p>
+                            <p>Humidity</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <img src="images/wind.png">
+                        <div>
+                            <p class="wind">5 km/hr</p>
+                            <p>Wind</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </body>
+    <script>
+        function dropthemenu() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const apiKey = 'aa1a7a80e2da079981ce624a3fc33569';
+            const cityDropdown = document.getElementById('myDropdown');
+            const temperatureElement = document.getElementById('tmpr');
+            const windElement = document.getElementById('wind');
+            const humidityElement = document.getElementById('humidity');
+
+            cityDropdown.addEventListener('click', async (event) => {
+                if (event.target.tagName === 'A' && event.target.dataset.city) {
+                    const city = event.target.dataset.city;
+                    console.log(city)
+
+                    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
+                    const data = await response.json();
+                    console.log(data)
+
+                    if (response.ok) {
+                        document.querySelector(".tmpr").innerHTML = Math.round(data.main.temp) + "°C";
+                        document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+                        document.querySelector(".wind").innerHTML = data.wind.speed + " km/hr";
+                        document.querySelector(".city").innerHTML = data.name;
+                    } else {
+                        temperatureElement.textContent = 'City not found';
+                        descriptionElement.textContent = '';
+                        humidityElement.textContent = '';
+                    }
+                }   
+            });
+        });
+    </script>
+</html>
